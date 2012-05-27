@@ -15,6 +15,7 @@ OPTIONS:
   -D           cloudfoundry domain (default: vcap.me)
   -r           cloud foundry repo
   -b           cloud foundry repo branch/tag/SHA
+  -A           attributes file(s) for overrides
 EOF
 }
 
@@ -28,7 +29,7 @@ fi
 
 APT_CONFIG="-o Acquire::http::No-Cache=True -o Acquire::BrokenProxy=true -o Acquire::Retries=3"
 
-while getopts "had:p:c:D:r:b:" OPTION
+while getopts "had:p:c:D:r:b:A:" OPTION
 do
   case $OPTION in
     h)
@@ -37,6 +38,9 @@ do
       ;;
     a)
       ALL=true
+      ;;
+    A)
+      ATTR_FILES="$ATTR_FILES -A $OPTARG"
       ;;
     c)
       CONFIG_FILE=$OPTARG
@@ -152,6 +156,10 @@ fi
 
 if [ -n "$CONFIG_FILE" ]; then
   ARGS="$ARGS -c $CONFIG_FILE"
+fi
+
+if [ -n "$ATTR_FILES" ]; then
+    ARGS="$ARGS $ATTR_FILES"
 fi
 
 $CLOUDFOUNDRY_HOME/vcap/dev_setup/lib/chefsolo_launch.rb $ARGS

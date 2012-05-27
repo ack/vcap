@@ -18,6 +18,7 @@ cloudfoundry_home = Deployment.get_cloudfoundry_home
 cloudfoundry_domain = Deployment.get_cloudfoundry_domain
 deployment_spec = File.expand_path(File.join(script_dir, "..", DEPLOYMENT_DEFAULT_SPEC))
 chef_log_level = 'info'
+node_attrs = {}
 
 args = ARGV.dup
 opts_parser = OptionParser.new do |opts|
@@ -25,6 +26,9 @@ opts_parser = OptionParser.new do |opts|
   opts.on('--dir CLOUDFOUNDRY_HOME', '-d CLOUDFOUNDRY_HOME') { |dir| cloudfoundry_home = File.expand_path(dir.to_s) }
   opts.on('--domain CLOUDFOUNDRY_DOMAIN', '-D CLOUDFOUNDRY_DOMAIN') { |domain| cloudfoundry_domain = domain }
   opts.on('--log_level LEVEL', '-l LEVEL') { |level| chef_log_level = level }
+  opts.on('--attributes JSON', '-A JSON') do |filename|
+    node_attrs.merge! JSON.load(open(filename))
+  end
 end
 args = opts_parser.parse!(args)
 
@@ -45,6 +49,17 @@ spec["deployment"]["domain"] ||= cloudfoundry_domain
 spec["cloudfoundry"] ||= {}
 spec["cloudfoundry"]["home"] ||= cloudfoundry_home
 spec["cloudfoundry"]["home"] = File.expand_path(spec["cloudfoundry"]["home"])
+
+# allow overrides of vcap_def vars
+if deployment = node_attrs.delete("deployment")
+  spec["deployment"].merge! deployment
+end
+if cloudfoundry = node_attrs.delete("cloudfoundry")
+  spec["cloudfoundry"].merge! cloudfoundry
+end
+
+# override the rest of the defaults with provided attributes
+spec.merge! node_attrs
 
 if cloudfoundry_home != Deployment.get_cloudfoundry_home && cloudfoundry_home != spec["cloudfoundry"]["home"]
   puts "Conflicting values for cloudfoundry home directory, command line argument says #{cloudfoundry_home} but config file says #{spec["cloudfoundry"]["home"]}"
@@ -75,6 +90,7 @@ spec["run_list"] = run_list
 
 # Merge the job specs
 spec.merge!(job_specs)
+
 
 # Deploy
 Dir.mktmpdir do |tmpdir|

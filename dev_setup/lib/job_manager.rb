@@ -127,7 +127,11 @@ class JobManager
         next if required_properties[job].nil?
 
         expected = Set.new(required_properties[job])
-        given = properties.nil? ? Set.new : Set.new(properties.keys)
+        attributes = @config[job.to_s]
+
+        given = Set.new
+        (properties || {}).keys.each {|k| given.add(k) }
+        (@config[job] || {}).keys.each {|k| given.add(k) }
 
         # Check if all the required properties are given
         if !expected.subset?(given)
