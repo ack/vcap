@@ -12,9 +12,8 @@ module CloudFoundryPostgres
           `grep "#{db}\s*#{user}" #{pg_hba_conf_file}`
           if $?.exitstatus != 0
             `echo "host #{db} #{user} 0.0.0.0/0 md5" >> #{pg_hba_conf_file}`
+            `service postgresql restart`
           end
-          # Cant use service resource as service name needs to be statically defined
-          `#{File.join("", "etc", "init.d", "postgresql-#{pg_major_version}")} restart`
         end
       end
     else

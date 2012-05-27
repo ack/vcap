@@ -27,9 +27,15 @@ when "ubuntu"
       end
 
       # Cant use service resource as service name needs to be statically defined
-      `#{File.join("", "etc", "init.d", "postgresql-#{pg_major_version}")} restart`
+      #`#{File.join("", "etc", "init.d", "postgresql-#{pg_major_version}")} restart`
     end
   end
+
+  service "postgresql" do
+    supports :restart => true, :status => true, :reload => true
+    action [:enable, :start]
+  end
+  
 else
   Chef::Log.error("Installation of PostgreSQL is not supported on this platform.")
 end

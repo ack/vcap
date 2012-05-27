@@ -13,14 +13,14 @@ runtimes:
       executable: "java"
       environment:
         path: /usr/bin:$PATH
-  - node:
+  - node04:
       version: '0.4.12'
       description: 'Node.js'
       executable: <%= File.join(node[:node04][:path], "bin", "node") %>
       environment:
         path: <%= File.join(node[:node04][:path], "bin") %>:$PATH
   - node06:
-      version: '0.6.8'
+      version: '0.6.17'
       description: 'Node.js'
       executable: <%= File.join(node[:node06][:path], "bin", "node") %>
       environment:

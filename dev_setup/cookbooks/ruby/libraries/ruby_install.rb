@@ -4,7 +4,7 @@ module RubyInstall
     bundler_version = node[:rubygems][:bundler][:version]
     rake_version = node[:rubygems][:rake][:version]
 
-    %w[ build-essential libssl-dev zlib1g-dev libreadline5-dev libxml2-dev libpq-dev].each do |pkg|
+    %w[ build-essential libssl-dev zlib1g-dev libreadline*-dev libxml2-dev libpq-dev libyaml-dev ].each do |pkg|
       package pkg
     end
 
@@ -23,6 +23,30 @@ module RubyInstall
       action :create
     end
 
+
+    file "/tmp/ruby-openssl.patch" do
+      action :create
+      content <<-EOS
+*** ext/openssl/ossl_ssl.c	2012-04-06 20:21:24.037445894 -0700
+--- ext/openssl/ossl_ssl.c	2012-04-06 20:29:47.262793676 -0700
+*************** struct {
+*** 107,115 ****
+--- 107,117 ----
+      OSSL_SSL_METHOD_ENTRY(TLSv1),
+      OSSL_SSL_METHOD_ENTRY(TLSv1_server),
+      OSSL_SSL_METHOD_ENTRY(TLSv1_client),
++ /*
+      OSSL_SSL_METHOD_ENTRY(SSLv2),
+      OSSL_SSL_METHOD_ENTRY(SSLv2_server),
+      OSSL_SSL_METHOD_ENTRY(SSLv2_client),
++ */
+      OSSL_SSL_METHOD_ENTRY(SSLv3),
+      OSSL_SSL_METHOD_ENTRY(SSLv3_server),
+      OSSL_SSL_METHOD_ENTRY(SSLv3_client),
+EOS
+    end
+
+
     bash "Install Ruby #{ruby_path}" do
       cwd File.join("", "tmp")
       user node[:deployment][:user]
@@ -31,6 +55,11 @@ module RubyInstall
       # solution is found
       tar xzf #{tarball_path}
       cd ruby-#{ruby_version}
+
+      if [ "#{ruby_version}" != "1.9.3-p125" ] ; then
+        patch -p0 < /tmp/ruby-openssl.patch
+      fi
+
       ./configure --disable-pthread --prefix=#{ruby_path}
       make
       make install

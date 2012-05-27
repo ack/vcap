@@ -1,6 +1,6 @@
 module NodeInstall
   def cf_node_install(node_version, node_source, node_path, node_npm=nil)
-    %w[ build-essential ].each do |pkg|
+    %w[ build-essential libssl0.9.8 libssl-dev libc-ares2 ].each do |pkg|
       package pkg
     end
 

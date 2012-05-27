@@ -17,7 +17,7 @@ lua_module_path = node[:lua][:module_path]
 case node['platform']
 when "ubuntu"
 
-  %w[ build-essential].each do |pkg|
+  %w[ build-essential libncurses5 libncurses5-dev ].each do |pkg|
     package pkg
   end
 
@@ -144,10 +144,15 @@ when "ubuntu"
         --add-module=../agentzh-headers-more-nginx-module-5fac223 \
         --add-module=../simpl-ngx_devel_kit-bc97eea \
         --add-module=../chaoslawful-lua-nginx-module-4d92cb1
+
+      # TURN OFF PARANOIA-MODE
+      sed -i 's/ -Werror / /g' objs/Makefile
+
       make
       make install
 
       EOH
+    not_if { File.exists?(nginx_path) }
   end
 
   template "nginx.conf" do

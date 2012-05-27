@@ -11,16 +11,23 @@ when "ubuntu"
   package "mysql-client"
 
   bash "Setup mysql" do
+    vs = node[:mysql][:version]
+    passwd = node[:mysql][:server_root_password]
     code <<-EOH
-    echo mysql-server-5.1 mysql-server/root_password select #{node[:mysql][:server_root_password]} | debconf-set-selections
-    echo mysql-server-5.1 mysql-server/root_password_again select #{node[:mysql][:server_root_password]} | debconf-set-selections
+    export DEBIAN_FRONTEND=noninteractive
+    echo mysql-server-#{vs} mysql-server/root_password select #{passwd} | debconf-set-selections
+    echo mysql-server-#{vs} mysql-server/root_password_again select #{passwd} | debconf-set-selections
+    echo mysql-server-#{vs} mysql-server/db_root_password select #{passwd} | debconf-set-selections
+    echo mysql-server-#{vs} mysql-server/db_root_password_again select #{passwd} | debconf-set-selections
+    echo mysql-server-#{vs} mysql-server/db_root_password select true | debconf-set-selections
+    echo mysql-server-#{vs} mysql-server/db_root_password_again select true | debconf-set-selections
+
+    apt-get install -qqy mysql-server-#{vs}
     EOH
     not_if do
       ::File.exists?(File.join("", "usr", "sbin", "mysqld"))
     end
   end
-
-  package "mysql-server"
 
   template File.join("", "etc", "mysql", "my.cnf") do
     source "ubuntu.cnf.erb"

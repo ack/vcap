@@ -2,10 +2,10 @@
 cloud_controller_uri: <%= node[:cloud_controller][:service_api_uri] %>
 service:
   name: mysql
-  version: "5.1"
+  version: "<%= node[:mysql][:version] %>"
   description: 'MySQL database service'
   plans: ['free']
-  tags: ['mysql', 'mysql-5.1', 'relational']
+  tags: ['mysql', 'mysql-<%= node[:mysql][:version] %>', 'relational']
 host: localhost
 index: 0
 token: <%= node[:mysql_node][:token] %>
