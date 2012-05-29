@@ -152,7 +152,7 @@ when "ubuntu"
       make install
 
       EOH
-    not_if { File.exists?(nginx_path) }
+    not_if { File.exists?(File.join(nginx_path, "sbin", "nginx")) }
   end
 
   template "nginx.conf" do

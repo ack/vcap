@@ -29,6 +29,9 @@ when "ubuntu"
     zend-framework
   ].each {|pkg| package pkg }
 
+  service "apache2" do
+    action [:stop, :disable]
+  end
 
   bash "Setup php" do
     code <<-EOH

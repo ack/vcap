@@ -60,7 +60,7 @@ EOS
         patch -p0 < /tmp/ruby-openssl.patch
       fi
 
-      ./configure --disable-pthread --prefix=#{ruby_path}
+      ./configure --disable-pthread --prefix=#{ruby_path} --disable-install-doc  --disable-install-rdoc
       make
       make install
       EOH
