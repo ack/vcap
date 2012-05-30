@@ -44,7 +44,7 @@ runtimes:
       environment:
         path: <%= File.join(node[:ruby18][:path], "bin") %>:$PATH
         bundle_gemfile:
-  - "ruby19":
+  - "ruby192":
       version: "1.9.2p180"
       description: "Ruby 1.9.2"
       executable: "<%= File.join(node[:ruby][:path], "bin", "ruby") %>"

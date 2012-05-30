@@ -9,6 +9,8 @@
                  "recipe[essentials]",
                  "recipe[ruby]",
                  "recipe[ruby::ruby18]",
+                 "recipe[ruby::ruby192]",
+                 "recipe[ruby::ruby193]",
                  "recipe[ccdb]",
                  "recipe[cloud_controller]"]
 }

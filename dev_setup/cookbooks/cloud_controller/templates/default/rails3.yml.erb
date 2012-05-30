@@ -11,15 +11,25 @@ runtimes:
        bundle_gemfile:
        rack_env: "production"
        path: <%= File.join(node[:ruby18][:path], "bin") %>:$PATH
-  - "ruby19":
+  - "ruby192":
       version: "1.9.2p180"
       description: "Ruby 1.9.2"
-      executable: "<%= File.join(node[:ruby][:path], "bin", "ruby") %>"
+      executable: "<%= File.join(node[:ruby192][:path], "bin", "ruby") %>"
       environment:
        rails_env: "production"
        bundle_gemfile:
        rack_env: "production"
-       path: <%= File.join(node[:ruby][:path], "bin") %>:$PATH
+       path: <%= File.join(node[:ruby192][:path], "bin") %>:$PATH
+  - "ruby193":
+      version: "1.9.3p125"
+      description: "Ruby 1.9.3"
+      executable: "<%= File.join(node[:ruby193][:path], "bin", "ruby") %>"
+      environment:
+       rails_env: "production"
+       bundle_gemfile:
+       rack_env: "production"
+       path: <%= File.join(node[:ruby193][:path], "bin") %>:$PATH
+       
 app_servers:
   - "thin":
       description: "Thin"
