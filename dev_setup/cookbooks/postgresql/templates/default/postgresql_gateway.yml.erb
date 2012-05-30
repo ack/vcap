@@ -1,0 +1,17 @@
+---
+cloud_controller_uri: <%= node[:cloud_controller][:service_api_uri] %>
+service:
+  name: postgresql
+  version: "<%= node[:postgresql][:version] %>"
+  description: 'PostgreSQL database service'
+  plans: ['free']
+  tags: ['postgresql', 'postgresql-<%= node[:postgresql][:version] %>', 'relational']
+host: localhost
+index: 0
+node_timeout: <%= node[:postgresql_gateway][:node_timeout] %>
+port: <%= node[:postgresql_gateway][:port] %>
+token: <%= node[:postgresql_node][:token] %>
+mbus: nats://<%= node[:nats_server][:user] %>:<%= node[:nats_server][:password] %>@<%= node[:nats_server][:host] %>:<%= node[:nats_server][:port] %>/
+pid: /var/vcap/sys/run/postgresql_service.pid
+logging:
+  level: debug

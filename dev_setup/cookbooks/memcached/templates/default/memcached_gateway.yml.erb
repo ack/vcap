@@ -7,6 +7,8 @@ service:
   plans: ['free']
   tags: ['memcached', 'memcached-1.4', 'key-value', 'cache']
 index: 0
+node_timeout: <%= node[:memcached_gateway][:node_timeout] %>
+port: <%= node[:memcached_gateway][:port] %>
 token: <%= node[:memcached_node][:token] %>
 mbus: nats://<%= node[:nats_server][:user] %>:<%= node[:nats_server][:password] %>@<%= node[:nats_server][:host] %>:<%= node[:nats_server][:port] %>/
 pid: /var/vcap/sys/run/memcached_gateway.pid

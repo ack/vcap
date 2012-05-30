@@ -9,6 +9,8 @@ service:
   timeout: 15
 host: localhost
 index: 0
+node_timeout: <%= node[:rabbitmq_gateway][:node_timeout] %>
+port: <%= node[:rabbitmq_gateway][:port] %>
 token: <%= node[:rabbitmq_node][:token] %>
 mbus: nats://<%= node[:nats_server][:user] %>:<%= node[:nats_server][:password] %>@<%= node[:nats_server][:host] %>:<%= node[:nats_server][:port] %>/
 pid: /var/vcap/sys/run/rabbit_gateway.pid
@@ -20,4 +22,4 @@ plan_management:
       low_water: 10
       high_water: 180
       #allow_over_provisioning: false
-node_timeout: 10
+
